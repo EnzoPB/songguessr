@@ -1,5 +1,6 @@
 import requests
 import os
+import time
 from base64 import b64encode
 from dataclasses import dataclass
 
@@ -23,22 +24,24 @@ class Song:
         self.preview_url = data['preview']
 
 spotify_token_header = None
+spotify_token_expire = 0
 
 def get_spotify_token_header():
-    global spotify_token_header
-    if spotify_token_header is None:
+    global spotify_token_header, spotify_token_expire
+    if spotify_token_header is None or spotify_token_expire <= time.time():
         token = b64encode(f'{os.environ['SPOTIFY_CLIENT_ID']}:{os.environ['SPOTIFY_CLIENT_SECRET']}'.encode())
         req = requests.post('https://accounts.spotify.com/api/token?grant_type=client_credentials', headers={
             'Authorization': f'Basic {token.decode()}',
             'Content-Type': 'application/x-www-form-urlencoded',
         })
         req.raise_for_status()
+        data = req.json()
+        spotify_token_expire = time.time() + data['expires_in']
         spotify_token_header = {
-            'Authorization': f'Bearer {req.json()['access_token']}'
+            'Authorization': f'{data['token_type']} {data['access_token']}'
         }
         print(spotify_token_header)
-    else:
-        return spotify_token_header
+    return spotify_token_header
 
 def get(url: str) -> (str, list[Song]):
     url_parts = url.split('/')
