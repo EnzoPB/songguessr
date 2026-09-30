@@ -79,8 +79,7 @@ function trigger_track_search() {
     if (query == '' || query == last_track_search_query) {
         return;
     }
-    fetch('/search_track?q=' + encodeURIComponent(query))
-        .then(data => data.json())
+    api_request('/search_track?q=' + encodeURIComponent(query))
         .then(suggestions => {
             last_track_search_query = query;
             $('#track-search-suggestions').attr('disabled', false);

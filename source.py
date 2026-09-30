@@ -52,7 +52,7 @@ def get(url: str) -> (str, list[Song]):
             req = requests.get(f'https://api.deezer.com/playlist/{playlist_id}')
             req.raise_for_status()
             data = req.json()
-            assert 'error' not in data, 'Could not get playlist'
+            assert 'error' not in data, f'Could not get playlist: {data['error']['message']}'
             tracks = [
                 Song(
                     title=t['title'],
@@ -76,7 +76,7 @@ def get(url: str) -> (str, list[Song]):
             req = requests.get(f'https://api.deezer.com/artist/{artist_id}/top?limit=200')
             req.raise_for_status()
             data = req.json()
-            assert 'error' not in data, 'Could not get artist songs'
+            assert 'error' not in data, f'Could not get artist songs: {data['error']['message']}'
             tracks = [
                 Song(
                     title=t['title'],
@@ -93,7 +93,7 @@ def get(url: str) -> (str, list[Song]):
                 req = requests.get(f'https://api.deezer.com/search/track?q={artist_name}&limit=50')
                 req.raise_for_status()
                 data = req.json()
-                assert 'error' not in data, 'Could not get artist songs'
+                assert 'error' not in data, f'Could not get artist songs: {data['error']['message']}'
                 tracks.extend([
                     Song(
                         title=t['title'],
@@ -112,7 +112,7 @@ def get(url: str) -> (str, list[Song]):
             req = requests.get(f'https://api.deezer.com/album/{album_id}')
             req.raise_for_status()
             data = req.json()
-            assert 'error' not in data, 'Could not get album'
+            assert 'error' not in data, f'Could not get album: {data['error']['message']}'
             tracks = [
                 Song(
                     title=t['title'],

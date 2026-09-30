@@ -15,8 +15,7 @@ $(function() {
         let source = $('#input-playlist').val();
         let songs_count = $('#input-songs-count').val();
         let difficulty = $('#input-difficulty').val();
-        fetch(`/create_game?source=${source}&songs_count=${songs_count}&difficulty=${difficulty}`)
-            .then(data => data.json())
+        api_request(`/create_game?source=${source}&songs_count=${songs_count}&difficulty=${difficulty}`)
             .then(data => {
                 console.log(data);
                 songs = data.tracks;
@@ -26,7 +25,7 @@ $(function() {
                 round = -1;
                 next_round();
                 Swal.close();
-            });
+            })
     });
 });
 
@@ -43,8 +42,7 @@ function trigger_source_search() {
     if (query == '' || query == last_source_search_query) {
         return;
     }
-    fetch('/search_source?q=' + encodeURIComponent(query))
-        .then(data => data.json())
+    api_request('/search_source?q=' + encodeURIComponent(query))
         .then(suggestions => {
             last_source_search_query = query;
             $('#source-search-suggestions').attr('disabled', false);
