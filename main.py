@@ -31,5 +31,3 @@ def handle_exception(error: Exception):
         traceback.print_exception(error)
     response.mimetype = 'text/plain'
     return response
-
-app.run(port=5000)
