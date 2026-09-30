@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/marx/5.3.2/marx.min.css">
+    <style>
+        label {
+            width: 100%;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        label > * {
+            font-size: initial;
+            font-weight: initial;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+        option {
+            padding: 6px 15px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="static/game.js"></script>
+    <script src="static/pregame.js"></script>
+    <script>
+        const difficulties = ['Disabled', 'Easy', 'Medium', 'Hard'];
+    </script>
+    <title></title>
+</head>
+<body>
+    <main style="margin-top:10px">
+        <section id="settings-screen">
+            <form id="form-settings">
+                <fieldset>
+                    <legend>Game settings</legend>
+
+                    <p>
+                        <label>
+                            Search an artist or playlist
+                            <input placeholder="..." type="search" id="input-source-search">
+                            <select id="source-search-suggestions" size="5" style="padding:0;margin:5px 0"></select>
+                        </label>
+                    </p>
+
+                    <p>
+                        <label>
+                            Source URL
+                            <details style="margin:0">
+                                Supported links:
+                                <ul style="margin:5px 0">
+                                    <li>Deezer playlist: https://www.deezer.com/playlist/...</li>
+                                    <li>Deezer album: https://www.deezer.com/album/...</li>
+                                    <li>Deezer artist page: https://www.deezer.com/artist/...</li>
+                                    <li>Deezer share link (to a playlist, album or an artist): https://link.deezer.com/s/...</li>
+                                    <li>Spotify playlist: https://open.spotify.com/playlist/...</li>
+                                </ul>
+                            </details>
+                            <input placeholder="https://www.deezer.com/playlist/..." type="url" id="input-playlist" required>
+                        </label>
+                    </p>
+
+                    <p>
+                        <label>
+                            Songs count<br>
+                            <span id="songs-count">5</span>
+                            <input type="range" oninput="$('#songs-count').text(this.value)" value="5" min="3" max="15" id="input-songs-count">
+                            <script>$(function(){ $('#songs-count').text($('#input-songs-count').val()) })</script>
+                        </label>
+                    </p>
+
+                    <p>
+                        <label>
+                            Difficulty<br>
+                            <span id="difficulty">Disabled</span>
+                            <input type="range" oninput="$('#difficulty').text(difficulties[this.value])" value="0" min="0" max="3" id="input-difficulty">
+                            <script>$(function(){ $('#difficulty').text(difficulties[$('#input-difficulty').val()]) })</script>
+                        </label>
+                    </p>
+
+                    <p>
+                        <button style="width:100%" type="submit">Start</button>
+                    </p>
+                </fieldset>
+            </form>
+        </section>
+
+        <section id="game-screen" style="display:none">
+            <fieldset>
+                <legend id="game-title"></legend>
+                
+                <div style="position:relative;height:10px">
+                    <progress style="position:absolute;top:0;left:0" id="progress" max="30" value="0"></progress>
+                    <progress style="position:absolute;top:0;left:0;opacity:0.3" id="stage" max="30" value="0.5"></progress>
+                </div>
+                <div style="display:flex;gap:10px;margin:10px 0">
+                    <button id="btn-play" style="width:100%">Play</button>
+                    <button id="btn-skip" style="width:100%">Skip</button>
+                    <button id="btn-give-up" style="display:none;width:100%">Give up</button>
+                </div>
+                <input autocomplete="off" type="search" id="input-track-search" placeholder="Search a song...">
+                <select id="track-search-suggestions" size="5" style="padding:0;margin:5px 0"></select>
+            </fieldset>
+        </section>
+
+        <section id="round-end-screen" style="display:none">
+            <fieldset>
+                <div style="display:flex;align-items:center;gap:5px;justify-content:center">
+                    +<span id="points" style="font-size:40px"></span> points
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;margin:10px;justify-content:center;font-size:20px">
+                    <img id="song-image" width="200" style="margin:0">
+                    <div>
+                        <span id="song-title"></span><br>
+                        <span id="song-artist"></span>
+                    </div>
+                </div>
+                <audio id="player" controls style="width:100%;margin:10px 0"></audio>
+                <button id="btn-next-round" style="width:100%">Next round</button>
+            </fieldset>
+        </section>
+
+        <section id="game-end-screen" style="display:none">
+            <fieldset>
+                <div style="display:flex;align-items:center;gap:5px;justify-content:center">
+                    You scored <span id="total-points" style="font-size:40px"></span> points
+                </div>
+                <button style="width:100%" onclick="window.location.reload()">Play again</button>
+            </fieldset>
+        </section>
+        
+    </main>
+</body>
+</html>
